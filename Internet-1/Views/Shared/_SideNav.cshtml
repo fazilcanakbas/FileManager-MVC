@@ -1,0 +1,83 @@
+﻿<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+
+        .btn-primary {
+            background-color: lightslategray; /* Yeni renk kodunuzu buraya yazın */
+            
+        }
+
+            .btn-primary:hover {
+                background-color: lightsteelblue; /* Hover durumunda renk değişimi */
+                
+            }
+
+        .bg-gradient-primary {
+            background:lightslategray;
+        }
+    </style>
+</head>
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-controller="Admin" asp-action="Index">
+        <div class="sidebar-brand-icon">
+            <i class="fa-solid fa-user-tie"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">YÖNETİM</div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="FileManager" asp-action="Index">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span>Geri Dön </span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Admin" asp-action="Index">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Admin Kontrol</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Admin" asp-action="FilesIndex">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Dosyalar</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Admin" asp-action="FoldersIndex">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Klasörler</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" asp-controller="Todo" asp-action="Index">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Not Defteri</span>
+        </a>
+    </li>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="User" asp-action="Index">
+                <i class="fas fa-fw fa-user"></i>
+                <span>Üyeler</span>
+            </a>
+        </li>
+    }
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>

@@ -1,0 +1,162 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@section CardHeader{
+    <span>Not Defteri</span>
+}
+<div class="row">
+    <div class="col-md-8">
+        <table class="table" id="tbNotes">
+            <thead>
+                <tr>
+                    <th>Başlık</th>
+                    <th>İçerik</th>
+                    <th>Düzenle</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <h5 id="editTitle">Yeni Not</h5>
+        <div class="mb-3">
+            <label>Başlık</label>
+            <input type="text" class="form-control" id="txtTitle" />
+            <input type="hidden" id="txtId" />
+        </div>
+        <div class="mb-3">
+            <label>İçerik</label>
+            <textarea rows="3" class="form-control" id="txtContent"></textarea>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary btn-sm" id="btnSave">Kaydet</button>
+            <button class="btn btn-secondary btn-sm" id="btnCancel">Vazgeç</button>
+            <button class="btn btn-danger btn-sm" id="btnDelete">Sil</button>
+        </div>
+        <div id="divResult"></div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script>
+       $(document).ready(function () {
+    GetNotesList();
+    $("#btnCancel").hide();
+    $("#btnDelete").hide();
+    $("#txtId").val(0);
+
+    $("#btnSave").click(function () {
+        const id = $("#txtId").val();
+        const title = $("#txtTitle").val();
+        const content = $("#txtContent").val();
+        const note = { Id: id, Title: title, Content: content };
+        $.ajax({
+            url: "/Notes/AddUpdateAjax",
+            type: "POST",
+            data: note,
+            success: function (d) {
+                if (d.status) {
+                    GetNotesList();
+                    ResetForm();
+                    ShowMessage("success", d.message);
+                } else {
+                    ShowMessage("danger", d.message);
+                }
+            },
+            error: function () {
+                ShowMessage("danger", "Hata oluştu!");
+            },
+        });
+    });
+
+    $(document).on("click", ".edit", function () {
+        const id = $(this).data("id");
+        $("#editTitle").html("Not Düzenle");
+        $("#btnCancel").show();
+        $("#btnDelete").show();
+        $.ajax({
+            url: `/Notes/GetByIdAjax/${id}`,
+            type: "GET",
+            success: function (d) {
+                $("#txtId").val(d.id);
+                $("#txtTitle").val(d.title);
+                $("#txtContent").val(d.content);
+            },
+        });
+    });
+
+    $("#btnCancel").click(function () {
+        ResetForm();
+    });
+
+    $("#btnDelete").click(function () {
+        const id = $("#txtId").val();
+        $.ajax({
+            url: `/Notes/DeleteAjax/${id}`,
+            type: "DELETE",
+            success: function (d) {
+                if (d.status) {
+                    GetNotesList();
+                    ResetForm();
+                    ShowMessage("success", d.message);
+                } else {
+                    ShowMessage("danger", d.message);
+                }
+            },
+        });
+    });
+
+    function GetNotesList() {
+        $.ajax({
+            url: "/Notes/ListAjax",
+            type: "GET",
+            success: function (data) {
+                NotesToTable(data);
+            },
+        });
+    }
+
+    function NotesToTable(data) {
+        $("#tbNotes tbody").empty();
+        let rows = "";
+        data.forEach((item) => {
+            rows += `
+                <tr>
+                    <td>${item.title}</td>
+                    <td>${item.content}</td>
+                    <td>
+                        <button class='btn btn-primary btn-sm edit' data-id='${item.id}'>Düzenle</button>
+                    </td>
+                </tr>
+            `;
+        });
+        $("#tbNotes tbody").append(rows);
+    }
+
+    function ResetForm() {
+        $("#editTitle").html("Yeni Not");
+        $("#btnCancel").hide();
+        $("#btnDelete").hide();
+        $("#txtId").val(0);
+        $("#txtTitle").val("");
+        $("#txtContent").val("");
+    }
+
+    function ShowMessage(type, message) {
+        $("#divResult")
+            .show()
+            .removeClass()
+            .addClass(`alert alert-${type}`)
+            .html(message)
+            .fadeOut(3000);
+    }
+});
+
+    </script>
+
+     }

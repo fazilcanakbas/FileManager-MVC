@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Dosya Yönetim Sistemi</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Internet_1.styles.css" asp-append-version="true" />
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        .navbar-nav.ml-auto {
+            margin-left: auto;
+        }
+
+        .img-profile {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+        }
+
+        .modal-backdrop {
+            z-index: 1040 !important; /* Modal arka planının z-index değeri */
+        }
+
+        .modal {
+            z-index: 1050 !important; /* Modal'ın üst katmanda görünmesini sağlamak */
+        }
+    </style>
+
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Dosya Yönetim Sistemi</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin</a>
+                        </li>
+                    </ul>
+
+                    <!-- Kullanıcı Profili ve Oturum Kapatma Butonu -->
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <span class="badge bg-success text-white mr-2">Yönetici Üye</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info text-white mr-2">Normal Üye</span>
+                                }
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                                    @User.Identity.Name
+                                </span>
+                                <img class="img-profile rounded-circle" src="~/userPhotos/@User.Claims.FirstOrDefault(c => c.Type == "PhotoUrl")?.Value" alt="User Image">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" asp-action="Profile" asp-controller="User">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Profil
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                
+                                    <a class="dropdown-item" asp-action="FilesIndex" asp-controller="Admin">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Oturumu Kapat
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                  
+
+
+
+
+    </header>
+
+
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - <a asp-area="" asp-controller="Home" asp-action="Index"> Dosya Yönetim Uygulaması</a>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  <!-- jQuery -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script> <!-- Bootstrap JS -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
