@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Internet_1.Models;
-using Internet_1.Repositories;
 using Internet_1.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
@@ -35,8 +34,8 @@ public class FileManagerController : Controller
     {
         // Eğer folderPath boşsa tüm dosya ve klasörleri getir
         var filesAndFolders = string.IsNullOrEmpty(folderPath)
-      ? _context.FileManagerViewModel.ToList()
-      : _context.FileManagerViewModel
+      ? _context.FileManagerModel.ToList()
+      : _context.FileManagerModel
           .Where(f => (f.Path ?? "").StartsWith(folderPath.TrimStart('/'))) // 'folderPath' başındaki '/' kaldırarak karşılaştırma yapıyoruz
           .ToList();
 
@@ -88,7 +87,7 @@ public class FileManagerController : Controller
         var filePath = Path.Combine(targetFolder, file.FileName);
 
         // Dosya modeli oluştur
-        var fileManagerViewModel = new FileManagerViewModel
+        var fileManagerModel = new FileManagerModel
         {
             Name = file.FileName,
             Path = filePath,
@@ -110,7 +109,7 @@ public class FileManagerController : Controller
             }
 
             // Veritabanına kaydet
-            _context.FileManagerViewModel.Add(fileManagerViewModel);
+            _context.FileManagerModel.Add(fileManagerModel);
             await _context.SaveChangesAsync();
 
             TempData["UploadMessage"] = "Dosya Başarıyla Yüklendi";
@@ -120,7 +119,7 @@ public class FileManagerController : Controller
             TempData["UploadMessage"] = $"Error occurred: {ex.Message}";
         }
         // FileManagerViewModel içindeki türü 'file' olan kayıtları say
-        int filecatCount = _context.FileManagerViewModel
+        int filecatCount = _context.FileManagerModel
             .Where(f => f.Type == "file") // Burada Type alanını 'file' olanlarla filtreliyoruz
             .Count();
 
@@ -176,10 +175,10 @@ public class FileManagerController : Controller
             }
 
             // Veritabanındaki kaydı sil
-            var fileManagerViewModel = await _context.FileManagerViewModel
+            var fileManagerViewModel = await _context.FileManagerModel
                 .FirstOrDefaultAsync(f => f.Path == fullPath);
 
-            int filecatCount = _context.FileManagerViewModel
+            int filecatCount = _context.FileManagerModel
               .Where(f => f.Type == "file") // Burada Type alanını 'file' olanlarla filtreliyoruz
               .Count();
 
@@ -188,7 +187,7 @@ public class FileManagerController : Controller
            
             if (fileManagerViewModel != null)
             {
-                _context.FileManagerViewModel.Remove(fileManagerViewModel);
+                _context.FileManagerModel.Remove(fileManagerViewModel);
                 await _context.SaveChangesAsync();
             }
             // FileManagerViewModel içindeki türü 'file' olan kayıtları say
@@ -229,7 +228,7 @@ public class FileManagerController : Controller
             return NotFound($"The specified file does not exist: {fullPath}");
         }
         // FileManagerViewModel içindeki türü 'file' olan kayıtları say
-        int filecatCount = _context.FileManagerViewModel
+        int filecatCount = _context.FileManagerModel
             .Where(f => f.Type == "file") // Burada Type alanını 'file' olanlarla filtreliyoruz
             .Count();
 
@@ -272,7 +271,7 @@ public class FileManagerController : Controller
             string virtualFolderPath = folderName; // Sanal yol
 
             // Veritabanına kaydetme işlemi
-            var folder = new FileManagerViewModel
+            var folder = new FileManagerModel
             {
                 Name = folderName,
                 Path = virtualFolderPath, // Sadece sanal yol veriyoruz
@@ -283,14 +282,14 @@ public class FileManagerController : Controller
             };
 
             // Veritabanına ekleme işlemi
-            _context.FileManagerViewModel.Add(folder);
+            _context.FileManagerModel.Add(folder);
             
 
             try
             {
                 _context.SaveChanges(); // Veritabanına kaydet
                 TempData["UploadMessage"] = "Klasör Oluşturuldu";
-                int foldercatCount = _context.FileManagerViewModel
+                int foldercatCount = _context.FileManagerModel
                   .Where(f => f.Type == "DefaultType") // Burada Type alanını 'file' olanlarla filtreliyoruz
                   .Count();
 
@@ -330,7 +329,7 @@ public class FileManagerController : Controller
             var decodedPath = WebUtility.UrlDecode(path);
 
             // Veritabanında bu klasörü bul
-            var folder = await _context.FileManagerViewModel
+            var folder = await _context.FileManagerModel
                 .FirstOrDefaultAsync(f => f.Path == decodedPath && f.IsFolder == true);
 
             if (folder == null)
@@ -339,14 +338,14 @@ public class FileManagerController : Controller
             }
 
             // Klasörü ve içindeki ilgili öğeleri (alt klasörler veya dosyalar) kaldır
-            var relatedItems = _context.FileManagerViewModel
+            var relatedItems = _context.FileManagerModel
                 .Where(f => f.Path.StartsWith(decodedPath));
 
-            _context.FileManagerViewModel.RemoveRange(relatedItems); // İlgili tüm öğeleri kaldır
+            _context.FileManagerModel.RemoveRange(relatedItems); // İlgili tüm öğeleri kaldır
             await _context.SaveChangesAsync();
 
             // SignalR ile tüm istemcilere bildir
-            int folderCount = _context.FileManagerViewModel.Count(f => f.IsFolder == true);
+            int folderCount = _context.FileManagerModel.Count(f => f.IsFolder == true);
             await _generalHub.Clients.All.SendAsync("onFolderDelete", folderCount);
 
             TempData["DeleteMessage"] = "Klasör başarıyla silindi." ;

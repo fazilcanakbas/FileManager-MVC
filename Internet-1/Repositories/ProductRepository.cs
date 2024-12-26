@@ -4,7 +4,7 @@ using Internet_1.ViewModels;
 
 namespace Internet_1.Repositories
 {
-    public class ProductRepository : GenericRepository<Product>
+    public class ProductRepository : GenericRepository<ViewModels.FileManagerViewModel>
     {
         public ProductRepository(AppDbContext context) : base(context)
         {

@@ -12,7 +12,10 @@ namespace Internet_1.Controllers
         {
             db = context;
         }
-
+        public IActionResult Index()
+        {
+            return View();
+        }
         // Not Listeleme
         [HttpGet]
         public JsonResult ListAjax()

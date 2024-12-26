@@ -8,7 +8,7 @@ namespace Internet_1.Mapping
     {
         public MapProfile()
         {
-            CreateMap<Product, FileManagerViewModel>().ReverseMap();
+            CreateMap<FileManagerViewModel, FileManagerViewModel>().ReverseMap();
           
             CreateMap<AppUser, UserModel>().ReverseMap();
             CreateMap<AppUser, RegisterModel>().ReverseMap();
