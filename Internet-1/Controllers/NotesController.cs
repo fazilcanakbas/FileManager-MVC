@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Internet_1.Models;
-using Internet_1.Repositories;
-using System.Linq;
 
 namespace Internet_1.Controllers
 {
