@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\FileManagerAdmin\" />
     <Folder Include="wwwroot\uploads\" />
     <Folder Include="wwwroot\userPhotos\" />
   </ItemGroup>
@@ -53,13 +52,6 @@
     <None Include="wwwroot\lib\login5.jpg" />
     <None Include="wwwroot\lib\login6.jpg" />
     <None Include="wwwroot\lib\login7.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Views\Shared\Index.cshtml">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>

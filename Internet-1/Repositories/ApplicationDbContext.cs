@@ -6,7 +6,7 @@ namespace Internet_1.Repositories
 {
     public class ApplicationDbContext : DbContext
     {
-        public DbSet<Ideas> Ideas { get; set; }
+      
         public ApplicationDbContext()
         {
         }
@@ -16,7 +16,6 @@ namespace Internet_1.Repositories
         }
         
 
-        public DbSet<IdeasFeedback> IdeaFeedbacks { get; set; }  // IdeaFeedback tablosu
       
 
 
